@@ -1,12 +1,16 @@
+import 'dart:io';
+
 void main () {
-  int input = 6;
+  stdout.write('Input angka: ');
+  String? input = stdin.readLineSync();
+  int angka = int.parse(input!);
   int totalPembagi = 0;
-  for (var i = 1; i <input; i++){
-    if (input%i == 0){
+  for (var i = 1; i < angka; i++){
+    if (angka%i == 0){
       totalPembagi += i;
     }
   }
-  if (totalPembagi == input){
+  if (totalPembagi == angka){
     print('true');
   } else {
     print('false');
