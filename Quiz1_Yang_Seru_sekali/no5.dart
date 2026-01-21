@@ -1,9 +1,7 @@
 import 'dart:io';
-import 'dart:math';
 
 void main () {
   List<Ujian> daftarUjian = [];
-  bool lanjut = true;
   int addedCount = 0;
   while (addedCount < 3) {
     stdout.write('Input nama student: ');
