@@ -9,7 +9,7 @@ void main () {
 
     stdout.write('Input nilai $nama: ');
     String? nilaiInput = stdin.readLineSync();
-    int? nilai = int.tryParse(nilaiInput!);
+    double? nilai = double.tryParse(nilaiInput!);
 
     if (nama != null && nilai != null) {
       Ujian ujian = Ujian();
@@ -18,7 +18,7 @@ void main () {
       daftarUjian.add(ujian);
       addedCount++;
     } else {
-      print('Input tidak valid. Silakan coba lagi.');
+      print('Error. Silakan coba lagi.');
       continue;
     }
   }
@@ -28,10 +28,10 @@ void main () {
     totalNilai += i.nilai!;
   }
   rataRata = totalNilai / daftarUjian.length;
-  print('Rata-rata nilai: $rataRata');
+  print('Rata-rata  adalah: $rataRata');
 }
 
 class Ujian {
   String? nama;
-  int? nilai;
+  double? nilai;
 }
