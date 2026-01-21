@@ -18,11 +18,11 @@ void main () {
       ujian.nama = nama;
       ujian.nilai = nilai;
       daftarUjian.add(ujian);
+      addedCount++;
     } else {
       print('Input tidak valid. Silakan coba lagi.');
       continue;
     }
-    addedCount++;
   }
   double totalNilai = 0;
   double rataRata = 0;
