@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:math' as math;
 
 class ContainerModel {
@@ -9,7 +10,11 @@ class ContainerModel {
   double currentAngle;
   double currentOffset;
   double previousOffset;
+  double currentOffsetY;
+  double previousOffsetY;
   bool isVisible;
+  double offsetRotation;
+  double previousOffsetRotation;
 
   ContainerModel({
     required this.index,
@@ -20,12 +25,20 @@ class ContainerModel {
   }) : children = children ?? [],
        currentAngle = initialAngle,
        currentOffset = 0.0,
-       previousOffset = 0.0;
+       previousOffset = 0.0,
+       currentOffsetY = 0.0,
+       previousOffsetY = 0.0,
+       offsetRotation = 0.0,
+       previousOffsetRotation = 0.0;
 
   void moveOffScreen() {
     isVisible = false;
     previousOffset = currentOffset;
-    currentOffset = 1000.0;
+    currentOffset = 500.0;
+    previousOffsetY = currentOffsetY;
+    currentOffsetY = -300.0;
+    previousOffsetRotation = offsetRotation;
+    offsetRotation = -180 * math.pi / 180;
   }
 
   void rotateByDegrees(double degrees) {
@@ -37,6 +50,10 @@ class ContainerModel {
     currentAngle = initialAngle;
     currentOffset = 0.0;
     previousOffset = 0.0;
+    currentOffsetY = 0.0;
+    previousOffsetY = 0.0;
+    offsetRotation = 0.0;
+    previousOffsetRotation = 0.0;
   }
 }
 
@@ -54,6 +71,9 @@ class MainApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme,
+        ),
       ),
       home: const MyHomePage(),
     );
@@ -96,16 +116,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+            child: Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Center(
+                child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: const [
+                  SizedBox(height: 30),
                   Text('Total Waste Contributed', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 50),
-                  Text('You\'ve Managed 16 KG of Waste!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 20),
-                  Text('That\'s like saving 99 plastic bottles from burning!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.normal)),
+                  SizedBox(height: 70),
+                  Text('You\'ve Managed\n16 KG of Waste!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 10),
+                  Text('That\'s like saving 99 plastic\nbottles from burning!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.normal)),
                 ],
+              ),
               ),
             ),
           ),
@@ -119,26 +143,40 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text('Your Waste Breakdown', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+            child: Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Center(
+                child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(height: 30),
+                  Text('Waste Breakdown', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                   SizedBox(height: 30),
                   Text('Your Waste Stats', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 20),
-                  Text('Organic             5kg', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 5),
-                  Text('Inorganic           3kg', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 5),
-                  Text('Hazardous           2kg', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 5),
-                  Text('Residual            3kg', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 5),
-                  Text('Paper               3kg', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 20),
-                  Text('Small changes, big impact! Keep sorting your waste!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.normal)),
+                  SizedBox(height: 10),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 45, vertical: 0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildWasteRow('Organic', '5 kg'),
+                        Divider(color: Colors.transparent, height: 7),
+                        _buildWasteRow('Inorganic', '3 kg'),
+                        Divider(color: Colors.transparent, height: 7),
+                        _buildWasteRow('Hazardous', '2 kg'),
+                        Divider(color: Colors.transparent, height: 7),
+                        _buildWasteRow('Residual', '3 kg'),
+                        Divider(color: Colors.transparent, height: 7),
+                        _buildWasteRow('Paper', '3 kg'),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Text('Small changes, big impact!\nKeep sorting your waste!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.normal)),
                 ],
+              ),
               ),
             ),
           ),
@@ -152,14 +190,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+            child: Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Center(
+                child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: const [
-                  Icon(Icons.shopping_bag, size: 50, color: Colors.white),
-                  SizedBox(height: 10),
-                  Text('Container 3', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 30),
+                  Text('Environmental Impact', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 80),
+                  Text('You Helped Reduce', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 5),
+                  Text('15 kg', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 50, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 0),
+                  Text('of CO₂!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 30),
+                  Text('That\'s like burning 6L of\ngasoline!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.normal)),
                 ],
+              ),
               ),
             ),
           ),
@@ -173,14 +221,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+            child: Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Center(
+                child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: const [
-                  Icon(Icons.pets, size: 50, color: Colors.white),
-                  SizedBox(height: 10),
-                  Text('Container 4', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 30),
+                  Text('Energy saved', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 80),
+                  Text('Your recycling saved', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 5),
+                  Text('30 kWh', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 50, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 0),
+                  Text('of electricity!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 30),
+                  Text('That\'s enough to power a\nTV for 150 hours!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.normal)),
                 ],
+              ),
               ),
             ),
           ),
@@ -194,14 +252,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+            child: Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Center(
+                child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: const [
-                  Icon(Icons.music_note, size: 50, color: Colors.white),
-                  SizedBox(height: 10),
-                  Text('Container 5', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 30),
+                  Text('Recycling Value', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 70),
+                  Text('Your recyclable waste\nis worth', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 0),
+                  Text('Rp 39.690', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 50, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 0),
+                  Text('in raw materials!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 15),
+                  Text('Waste isn\'t waste until it recycled\nKeep recycling!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.normal)),
                 ],
+              ),
               ),
             ),
           ),
@@ -215,14 +283,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+            child: Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Center(
+                child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: const [
-                  Icon(Icons.camera_alt, size: 50, color: Colors.white),
-                  SizedBox(height: 10),
-                  Text('Container 6', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 30),
+                  Text('Future Footprint', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 80),
+                  Text('You\'ve reduced', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 5),
+                  Text('10%', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 50, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 0),
+                  Text('of your annual waste!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 30),
+                  Text('Imagine if everyone did the\nsame, massive impact!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.normal)),
                 ],
+              ),
               ),
             ),
           ),
@@ -236,14 +314,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+            child: Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Center(
+                child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: const [
-                  Icon(Icons.sports_basketball, size: 50, color: Colors.white),
-                  SizedBox(height: 10),
-                  Text('Container 7', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 30),
+                  Text('Water Saved', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 80),
+                  Text('Yo\'ve saved', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 5),
+                  Text('255L', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 50, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 0),
+                  Text('of water!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 30),
+                  Text('That\'s enough for taking 3\nshort showers!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.normal)),
                 ],
+              ),
               ),
             ),
           ),
@@ -257,14 +345,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+            child: Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Center(
+                child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: const [
-                  Icon(Icons.sunny, size: 50, color: Colors.white),
-                  SizedBox(height: 10),
-                  Text('Container 8', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 30),
+                  Text('Eco Score', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 70),
+                  Text('Your waste efforts\nrank in the top', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 0),
+                  Text('10%', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 50, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 0),
+                  Text('of users!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 15),
+                  Text('You\'re leading the change\nLet\'s push for more!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.normal)),
                 ],
+              ),
               ),
             ),
           ),
@@ -279,6 +377,30 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
         ];
     }
+  }
+
+  Widget _buildWasteRow(String wasteType, String amount) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          wasteType,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          amount,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -319,26 +441,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           },
           child: TweenAnimationBuilder<Offset>(
             tween: Tween<Offset>(
-              begin: Offset(container.previousOffset, 0),
-              end: Offset(container.currentOffset, 0),
+              begin: Offset(container.previousOffset, container.previousOffsetY),
+              end: Offset(container.currentOffset, container.currentOffsetY),
             ),
             duration: const Duration(milliseconds: 500),
+            curve: Curves.easeIn,
             builder: (context, animatedOffset, child) {
               return Transform.translate(
                 offset: animatedOffset,
                 child: TweenAnimationBuilder<double>(
                   tween: Tween<double>(
-                    begin: container.currentAngle - (10 * math.pi / 180),
-                    end: container.currentAngle,
+                    begin: container.currentAngle + container.previousOffsetRotation - (10 * math.pi / 180),
+                    end: container.currentAngle + container.offsetRotation,
                   ),
                   duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
                   builder: (context, animatedAngle, child) {
                     return Transform.rotate(
                       angle: animatedAngle,
                       child: Container(
-                        height: 400.0,
-                        width: 300.0,
+                        height: 480.0,
+                        width: 360.0,
                         color: container.color,
+                        padding: EdgeInsets.all(16.0),
                         child: Stack(
                           children: container.children.isNotEmpty 
                             ? container.children 
@@ -368,16 +493,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        leadingWidth: 35,
+        titleSpacing: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.chevron_left, color: Color(0xFF333333)), iconSize: 40,
           onPressed: () {},
         ),
-        title: const Text('WasteWrap'),
+        title: const Text('WasteWrap', style: TextStyle(color: Color(0xFF333333), fontSize: 17, fontWeight: FontWeight.w900)),
       ),
       backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          SizedBox(height: 20),
           const Text(
             'Your WasteWrap is Ready!', 
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
@@ -385,39 +514,47 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           const SizedBox(height: 0),
           const Text(
             'See How You Made an Impact!', 
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
           ),
-          const SizedBox(height: 50),
+          const SizedBox(height: 25),
           Center(
             child: Stack(
               alignment: Alignment.center,
               children: containerWidgets.reversed.toList(),
             ),
           ),
-          const SizedBox(height: 40),
-          if (containers.where((c) => c.isVisible).length == 1 && containers[7].isVisible)
-            GestureDetector(
-              onTap: () {
-                // Add button action here
-              },
-              child: Container(
-                height: 60,
-                width: 250,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/bg8.png'),
-                    fit: BoxFit.cover,
+          const SizedBox(height: 50),
+          AnimatedOpacity(
+            opacity: containers.where((c) => c.isVisible).length == 1 && containers[7].isVisible ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 500),
+            child: IgnorePointer(
+              ignoring: !(containers.where((c) => c.isVisible).length == 1 && containers[7].isVisible),
+              child: GestureDetector(
+                onTap: () {
+                  // Add button action here
+                },
+                child: Container(
+                  height: 60,
+                  width: 250,
+                  padding: EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    gradient:  LinearGradient(
+                      colors: [Color(0xFF234968), Color(0xFF2E8B57)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(30),
                   ),
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Recycle More',
-                    style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                  child: const Center(
+                    child: Text(
+                      'Recycle More',
+                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ),
             ),
+          ),
         ],
       ),
     );
