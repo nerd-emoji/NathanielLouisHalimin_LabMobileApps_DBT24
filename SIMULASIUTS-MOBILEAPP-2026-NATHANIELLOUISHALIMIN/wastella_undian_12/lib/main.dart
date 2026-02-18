@@ -71,17 +71,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   int clicked = 0;
   late List<ContainerModel> containers;
 
-  final List<Color> containerColors = [
-    Colors.blue,
-    Colors.red,
-    Colors.green,
-    Colors.orange,
-    Colors.purple,
-    Colors.pink,
-    Colors.teal,
-    Colors.amber,
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -89,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       8,
       (index) => ContainerModel(
         index: index,
-        color: containerColors[index],
+        color: Colors.transparent,
         initialAngle: -index * 10 * math.pi / 180,
         children: _buildContainerContent(index),
       ),
@@ -111,9 +100,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
-                  Icon(Icons.star, size: 50, color: Colors.white),
-                  SizedBox(height: 10),
-                  Text('Container 1', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text('Total Waste Contributed', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 50),
+                  Text('You\'ve Managed 16 KG of Waste!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 20),
+                  Text('That\'s like saving 99 plastic bottles from burning!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.normal)),
                 ],
               ),
             ),
@@ -132,9 +123,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
-                  Icon(Icons.favorite, size: 50, color: Colors.white),
-                  SizedBox(height: 10),
-                  Text('Container 2', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text('Your Waste Breakdown', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 30),
+                  Text('Your Waste Stats', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 20),
+                  Text('Organic             5kg', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 5),
+                  Text('Inorganic           3kg', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 5),
+                  Text('Hazardous           2kg', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 5),
+                  Text('Residual            3kg', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 5),
+                  Text('Paper               3kg', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 20),
+                  Text('Small changes, big impact! Keep sorting your waste!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.normal)),
                 ],
               ),
             ),
@@ -313,9 +316,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 }
               }
             });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Container ${index + 1} clicked!')),
-            );
           },
           child: TweenAnimationBuilder<Offset>(
             tween: Tween<Offset>(
@@ -394,6 +394,30 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               children: containerWidgets.reversed.toList(),
             ),
           ),
+          const SizedBox(height: 40),
+          if (containers.where((c) => c.isVisible).length == 1 && containers[7].isVisible)
+            GestureDetector(
+              onTap: () {
+                // Add button action here
+              },
+              child: Container(
+                height: 60,
+                width: 250,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/bg8.png'),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Recycle More',
+                    style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
